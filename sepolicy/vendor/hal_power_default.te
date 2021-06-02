@@ -18,3 +18,6 @@ allow hal_power_default vendor_sysfs_graphics:file r_file_perms;
 set_prop(hal_power_default, vendor_power_prop)
 
 dontaudit hal_power_default self:capability dac_override;
+
+allow hal_power_default sysfs_touchpanel:dir search;
+allow hal_power_default sysfs_touchpanel:{ file lnk_file } rw_file_perms;
