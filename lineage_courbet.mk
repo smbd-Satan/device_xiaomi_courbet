@@ -17,6 +17,9 @@ $(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 # Boot animation
 TARGET_BOOT_ANIMATION_RES := 1080
 TARGET_SUPPORTS_QUICK_TAP := true
+RICE_CHIPSET := Snapdragon-732G
+WITH_GMS := true
+RICE_MAINTAINER := ʜɛʁɴɐɴ
 
 PRODUCT_NAME := lineage_courbet
 PRODUCT_DEVICE := courbet
