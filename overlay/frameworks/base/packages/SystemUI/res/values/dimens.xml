@@ -22,16 +22,16 @@
     <dimen name="physical_power_button_center_screen_location_y">@dimen/physical_fingerprint_sensor_center_screen_location_y</dimen>
 
     <!-- the padding on the top of the statusbar (usually 0) -->
-    <dimen name="status_bar_padding_top">9dp</dimen>
-    <dimen name="status_bar_padding_start">0dp</dimen>
-    <dimen name="status_bar_padding_end">0dp</dimen>
+    <dimen name="status_bar_padding_top">10dp</dimen>
+    <dimen name="status_bar_padding_start">1dp</dimen>
+    <dimen name="status_bar_padding_end">1dp</dimen>
     <dimen name="rounded_corner_content_padding">16dp</dimen>
 
     <!-- Default radius of the software rounded corners. -->
-    <dimen name="config_rounded_mask_size">146px</dimen>    
+    <dimen name="config_rounded_mask_size">102px</dimen>    
 
     <!-- Radius of the software rounded corners at the bottom of the display
          in its natural orientation. If zero, the value of rounded_corner_radius is used. -->
-    <dimen name="config_rounded_mask_size_top">146px</dimen>
-    <dimen name="config_rounded_mask_size_bottom">146px</dimen>
+    <dimen name="config_rounded_mask_size_top">102px</dimen>
+    <dimen name="config_rounded_mask_size_bottom">102px</dimen>
 </resources> 
