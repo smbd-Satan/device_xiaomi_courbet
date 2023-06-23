@@ -15,7 +15,7 @@
       "Path": "/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq",
       "Values": [
         "9999999",
-        "1248000",
+        "1612800",
         "576000"
       ],
       "ResetOnInit": true
@@ -97,6 +97,24 @@
       "Values": [
         "10000",
         "60"
+      ],
+      "ResetOnInit": true
+    },
+    {
+      "Name": "TASchedtuneBoost",
+      "Path": "/dev/stune/top-app/schedtune.boost",
+      "Values": [
+        "40",
+        "10"
+      ],
+      "ResetOnInit": true
+    },
+    {
+      "Name": "TASchedtuneHighCap",
+      "Path": "/dev/stune/top-app/schedtune.prefer_high_cap",
+      "Values": [
+        "1",
+        "0"
       ],
       "ResetOnInit": true
     },
@@ -239,6 +257,22 @@
       "ResetOnInit": true
     },
     {
+      "Name": "UpMigrate",
+      "Path": "/proc/sys/kernel/sched_upmigrate",
+      "Values": [
+        "0x5F",
+        "0x32"
+      ]
+    },
+    {
+      "Name": "DownMigrate",
+      "Path": "/proc/sys/kernel/sched_downmigrate",
+      "Values": [
+        "0x55",
+        "0x28"
+      ]
+    },
+    {
       "Name": "PowerHALMainState",
       "Path": "vendor.powerhal.state",
       "Values": [
@@ -295,7 +329,19 @@
       "PowerHint": "INTERACTION",
       "Node": "CPULittleClusterMinFreq",
       "Duration": 0,
-      "Value": "1248000"
+      "Value": "1612800"
+    },
+    {
+      "PowerHint": "INTERACTION",
+      "Node": "TASchedtuneBoost",
+      "Duration": 0,
+      "Value": "40"
+    },
+    {
+      "PowerHint": "INTERACTION",
+      "Node": "TASchedtuneHighCap",
+      "Duration": 0,
+      "Value": "1"
     },
     {
       "PowerHint": "INTERACTION",
@@ -416,6 +462,18 @@
       "Node": "L3BigClusterMinFreq",
       "Duration": 3000,
       "Value": "1459200000"
+    },
+    {
+      "PowerHint": "LAUNCH",
+      "Node": "UpMigrate",
+      "Duration": 2000,
+      "Value": "0x32"
+    },
+    {
+      "PowerHint": "LAUNCH",
+      "Node": "DownMigrate",
+      "Duration": 2000,
+      "Value": "0x28"
     },
     {
       "PowerHint": "AUDIO_LAUNCH",

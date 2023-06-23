@@ -111,6 +111,9 @@ PRODUCT_PACKAGES += \
     android.hardware.bluetooth@1.1.vendor \
     android.hardware.bluetooth.audio@2.1-impl \
     audio.bluetooth.default \
+    libbthost_if \
+    libbthost_if.vendor \
+    libldacBT_bco.vendor \
     vendor.qti.hardware.bluetooth_audio@2.1.vendor \
     vendor.qti.hardware.btconfigstore@1.0.vendor \
     vendor.qti.hardware.btconfigstore@2.0.vendor
@@ -379,7 +382,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
      android.hardware.power-service-qti
 
-$(call inherit-product-if-exists, vendor/qcom/opensource/power/power-vendor-product.mk)
+$(call inherit-product-if-exists, vendor/qcom/opensource/power-qti/power-vendor-product.mk)
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/power/powerhint.json:$(TARGET_COPY_OUT_VENDOR)/etc/powerhint.json
@@ -387,8 +390,7 @@ PRODUCT_COPY_FILES += \
 # QTI
 PRODUCT_PACKAGES += \
     libqti_vndfwk_detect.vendor
-    
-    
+
 PRODUCT_PACKAGES += \
     libsdmcore-shim
 
@@ -539,6 +541,8 @@ PRODUCT_PACKAGES += \
     libavservices_minijail \
     libavservices_minijail.vendor \
     libdisplayconfig.qti \
+    libdisplayconfig.qti.vendor \
+    libdisplayconfig.system \
     libdisplayconfig.system.qti \
     libnl \
     libqdMetaData \
