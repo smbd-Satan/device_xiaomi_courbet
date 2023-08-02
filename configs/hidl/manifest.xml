@@ -513,6 +513,7 @@
             <name>IWifiDisplaySessionImageTrack</name>
             <instance>wifidisplaysessionimagetrack</instance>
         </interface>
-    </hal>
+     </hal>
+ 
 </manifest>
 
