@@ -1,11 +1,11 @@
 on property:ro.boot.product.hardware.sku=courbet
     enable vendor.nfc_hal_service
 
-service vendor.nfc_hal_service /vendor/bin/hw/android.hardware.nfc@1.2-service
+service vendor.nfc_hal_service /vendor/bin/hw/android.hardware.nfc-service.nxp
     override
-    class hal
+    class early_hal
     user nfc
-    group nfc
+    group nfc drmrpc system
     disabled
 
 service vendor.audio-hal-aidl /vendor/bin/audio-hal-aidl

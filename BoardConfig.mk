@@ -81,10 +81,6 @@ DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := vendor/derp/config/device_framewor
                                              hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml \
                                               hardware/xiaomi/vintf/xiaomi_framework_compatibility_matrix.xml \
 
-ODM_MANIFEST_SKUS += courbet
-ODM_MANIFEST_COURBET_FILES := \
-    $(DEVICE_PATH)/configs/hidl/manifest-nfc.xml
-
 # Kernel
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_IMAGE_NAME := Image.gz
