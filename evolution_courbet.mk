@@ -15,7 +15,7 @@ $(call inherit-product, device/xiaomi/courbet/device.mk)
 $(call inherit-product, vendor/evolution/config/common_full_phone.mk)
 
 # Inherit gms if exist
-$(call inherit-product, vendor/gms/gms_pico.mk)
+$(call inherit-product, vendor/gms/gms_full.mk)
 
 # Boot animation
 TARGET_BOOT_ANIMATION_RES := 1080
