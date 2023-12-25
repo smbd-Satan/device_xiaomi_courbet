@@ -24,9 +24,6 @@ BUILD_BROKEN_DUP_RULES := true
 
 DEVICE_PATH := device/xiaomi/courbet
 
-# Inherit from proprietary files for miuicamera
--include vendor/xiaomi/sweet-miuicamera/products/board.mk
-
 # Inherit from proprietary files
 include vendor/xiaomi/courbet/BoardConfigVendor.mk
 
@@ -54,6 +51,10 @@ BOARD_SUPPORTS_SOUND_TRIGGER := true
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := sm6150
 TARGET_NO_BOOTLOADER := true
+
+# Camera
+MALLOC_SVELTE_FOR_LIBC32 := true
+MALLOC_SVELTE := true
 
 # Display
 TARGET_USES_COLOR_METADATA := true
@@ -92,8 +93,7 @@ BOARD_KERNEL_SEPARATED_DTBO := true
 
 TARGET_KERNEL_SOURCE := kernel/xiaomi/sm6150
 TARGET_KERNEL_CONFIG := courbet_defconfig
-TARGET_KERNEL_CLANG_VERSION := proton
-TARGET_KERNEL_CLANG_PATH := $(shell pwd)/prebuilts/clang/host/linux-x86/clang-proton
+
 
 BOARD_KERNEL_CMDLINE += androidboot.hardware=qcom
 BOARD_KERNEL_CMDLINE += androidboot.usbcontroller=a600000.dwc3
@@ -106,6 +106,9 @@ BOARD_KERNEL_CMDLINE += cgroup_disable=pressure
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
 BOARD_BOOTIMG_HEADER_VERSION := 2
 BOARD_MKBOOTIMG_ARGS := --header_version $(BOARD_BOOTIMG_HEADER_VERSION)
+
+# Health
+TARGET_HEALTH_CHARGING_CONTROL_CHARGING_PATH := /sys/class/power_supply/battery/battery_charging_enabled
 
 # Media
 TARGET_USES_ION := true
@@ -173,7 +176,7 @@ TARGET_SCREEN_DENSITY := 440
 
 # Sepolicy
 TARGET_SEPOLICY_DIR := msmsteppe
-include device/qcom/sepolicy_vndr-legacy-um/SEPolicy.mk
+include device/qcom/sepolicy_vndr/SEPolicy.mk
 BOARD_VENDOR_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/vendor
 SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/private
 SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/public

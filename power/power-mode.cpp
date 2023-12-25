@@ -34,7 +34,6 @@ namespace hardware {
 namespace power {
 namespace impl {
 
-
 using ::aidl::android::hardware::power::Mode;
 
 bool isDeviceSpecificModeSupported(Mode type, bool* _aidl_return) {

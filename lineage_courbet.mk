@@ -11,18 +11,20 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 # Inherit from courbet device
 $(call inherit-product, device/xiaomi/courbet/device.mk)
 
-# Inherit some common Ancient OS stuff.
-$(call inherit-product, vendor/evolution/config/common_full_phone.mk)
+# Inherit some common PeX stuff.
+$(call inherit-product, vendor/lineage/config/common_full_phone.mk)
+IS_PHONE := true
 
-# Inherit gms if exist
+# Gapps Architecture
 $(call inherit-product, vendor/gms/gms_full.mk)
+PRODUCT_GMS_CLIENTID_BASE := android-xiaomi
+TARGET_GAPPS_ARCH := arm64
+WITH_GAPPS := true
 
 # Boot animation
 TARGET_BOOT_ANIMATION_RES := 1080
-TARGET_SUPPORTS_QUICK_TAP := true
 
-
-PRODUCT_NAME := evolution_courbet
+PRODUCT_NAME := lineage_courbet
 PRODUCT_DEVICE := courbet
 PRODUCT_BRAND := Xiaomi
 PRODUCT_MODEL := M2101K9AG

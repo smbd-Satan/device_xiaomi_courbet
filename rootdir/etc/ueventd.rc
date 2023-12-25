@@ -177,8 +177,13 @@ firmware_directories /vendor/firmware_mnt/image/
 /dev/spidev0.0            0660   system     audio
 /dev/spidev0.1            0660   system     system
 
+# Fingerprint
+/dev/goodix_fp            0660   system     system
+
 # socinfo
 /sys/devices/soc0        serial_number   0000    root      root
 
-# Fingerprint
-/dev/goodix_fp            0660   system     system
+# Charger
+/sys/class/power_supply/battery  battery_charging_enabled   0660    system  system
+/sys/class/power_supply/battery  charging_enabled           0660    system  system
+/sys/class/power_supply/battery  input_suspend              0660    system  system

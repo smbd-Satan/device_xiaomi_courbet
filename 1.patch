@@ -1,0 +1,592 @@
+diff --git a/AndroidProducts.mk b/AndroidProducts.mk
+index c281be4..89ad08d 100644
+--- a/AndroidProducts.mk
++++ b/AndroidProducts.mk
+@@ -5,9 +5,9 @@
+ #
+ 
+ PRODUCT_MAKEFILES := \
+-    $(LOCAL_DIR)/evolution_courbet.mk
++    $(LOCAL_DIR)/lineage_courbet.mk
+ 
+ COMMON_LUNCH_CHOICES := \
+-    evolution_courbet-user \
+-    evolution_courbet-userdebug \
+-    evolution_courbet-eng
++    lineage_courbet-user \
++    lineage_courbet-userdebug \
++    lineage_courbet-eng
+diff --git a/BoardConfig.mk b/BoardConfig.mk
+index 737f041..c80d975 100644
+--- a/BoardConfig.mk
++++ b/BoardConfig.mk
+@@ -24,9 +24,6 @@ BUILD_BROKEN_DUP_RULES := true
+ 
+ DEVICE_PATH := device/xiaomi/courbet
+ 
+-# Inherit from proprietary files for miuicamera
+--include vendor/xiaomi/sweet-miuicamera/products/board.mk
+-
+ # Inherit from proprietary files
+ include vendor/xiaomi/courbet/BoardConfigVendor.mk
+ 
+@@ -55,6 +52,10 @@ BOARD_SUPPORTS_SOUND_TRIGGER := true
+ TARGET_BOOTLOADER_BOARD_NAME := sm6150
+ TARGET_NO_BOOTLOADER := true
+ 
++# Camera
++MALLOC_SVELTE_FOR_LIBC32 := true
++MALLOC_SVELTE := true
++
+ # Display
+ TARGET_USES_COLOR_METADATA := true
+ TARGET_USES_DISPLAY_RENDER_INTENTS := true
+@@ -92,8 +93,7 @@ BOARD_KERNEL_SEPARATED_DTBO := true
+ 
+ TARGET_KERNEL_SOURCE := kernel/xiaomi/sm6150
+ TARGET_KERNEL_CONFIG := courbet_defconfig
+-TARGET_KERNEL_CLANG_VERSION := proton
+-TARGET_KERNEL_CLANG_PATH := $(shell pwd)/prebuilts/clang/host/linux-x86/clang-proton
++
+ 
+ BOARD_KERNEL_CMDLINE += androidboot.hardware=qcom
+ BOARD_KERNEL_CMDLINE += androidboot.usbcontroller=a600000.dwc3
+@@ -107,6 +107,9 @@ BOARD_INCLUDE_DTB_IN_BOOTIMG := true
+ BOARD_BOOTIMG_HEADER_VERSION := 2
+ BOARD_MKBOOTIMG_ARGS := --header_version $(BOARD_BOOTIMG_HEADER_VERSION)
+ 
++# Health
++TARGET_HEALTH_CHARGING_CONTROL_CHARGING_PATH := /sys/class/power_supply/battery/battery_charging_enabled
++
+ # Media
+ TARGET_USES_ION := true
+ TARGET_DISABLED_UBWC := true
+@@ -173,7 +176,7 @@ TARGET_SCREEN_DENSITY := 440
+ 
+ # Sepolicy
+ TARGET_SEPOLICY_DIR := msmsteppe
+-include device/qcom/sepolicy_vndr-legacy-um/SEPolicy.mk
++include device/qcom/sepolicy_vndr/SEPolicy.mk
+ BOARD_VENDOR_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/vendor
+ SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/private
+ SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/public
+diff --git a/configs/audio/audio_effects.xml b/configs/audio/audio_effects.xml
+index dcbe231..955fa9c 100644
+--- a/configs/audio/audio_effects.xml
++++ b/configs/audio/audio_effects.xml
+@@ -44,14 +44,6 @@
+         <library name="dirac" path="libdirac.so"/>
+         <library name="misoundfx" path="libmisoundfx.so"/>
+ 	<library name="ozo_processing" path="libozoprocessing.so"/>
+-
+-        <!-- DOLBY DAP -->
+-        <library name="dap_sw" path="libswdap.so"/>
+-        <library name="dap_hw" path="libhwdap.so"/>
+-        <!-- DOLBY END -->
+-        <!--DOLBY VQE-->
+-        <library name="vqe" path="libswvqe.so"/>
+-        <!--DOLBY END-->
+         <!--OZO capture START-->
+         <library name="ozo_processing" path="libozoprocessing.so"/>
+         <!--OZO capture END-->
+@@ -110,15 +102,6 @@
+         <effect name="aec" library="audio_pre_processing" uuid="0f8d0d2a-59e5-45fe-b6e4-248c8a799109"/>
+         <effect name="ns" library="audio_pre_processing" uuid="1d97bb0b-9e2f-4403-9ae3-58c2554306f8"/>
+ 
+-	 <!-- DOLBY DAP -->
+-        <effectProxy name="dap" library="proxy" uuid="9d4921da-8225-4f29-aefa-39537a04bcaa">
+-            <libsw library="dap_sw" uuid="6ab06da4-c516-4611-8166-452799218539"/>
+-            <libhw library="dap_hw" uuid="a0c30891-8246-4aef-b8ad-d53e26da0253"/>
+-        </effectProxy>
+-        <!-- DOLBY END -->
+-        <!--DOLBY VQE-->
+-        <effect name="vqe" library="vqe" uuid="64a0f614-7fa4-48b8-b081-d59dc954616f"/>
+-        <!--DOLBY END-->
+         <!--OZO capture START-->
+         <effect name="ozo" library="ozo_processing" uuid="7e384a3b-7850-4a64-a097-884250d8a737"/>
+         <!--OZO capture END-->
+diff --git a/configs/audio/audio_policy_configuration_a2dp_offload_disabled.xml b/configs/audio/audio_policy_configuration_a2dp_offload_disabled.xml
+index 36bddb4..7ab7b51 100644
+--- a/configs/audio/audio_policy_configuration_a2dp_offload_disabled.xml
++++ b/configs/audio/audio_policy_configuration_a2dp_offload_disabled.xml
+@@ -323,7 +323,7 @@
+         <xi:include href="/vendor/etc/r_submix_audio_policy_configuration.xml"/>
+ 
+         <!-- Bluetooth Audio HAL for Hearing aid -->
+-        <xi:include href="/vendor/etc/hearing_aid_audio_policy_configuration.xml"/>
++        <xi:include href="/vendor/etc/hearing_aid_audio_policy_configuration_7_0.xml"/>
+ 
+     </modules>
+     <!-- End of Modules section -->
+diff --git a/configs/gps/izat.conf b/configs/gps/izat.conf
+index c28af24..1fc8461 100644
+--- a/configs/gps/izat.conf
++++ b/configs/gps/izat.conf
+@@ -124,14 +124,6 @@ SUPL_WIFI=BASIC
+ #BASIC
+ WIFI_SUPPLICANT_INFO=BASIC
+ 
+-#DBH modes:
+-#USE_ZPP_IN_DBH values:
+-#0: for new Modem platform, time based tracking is supported during DBH in modem,
+-#   AP side doesn't need to use ZPP to get best available position during DBH.
+-#1: for old Modem platform, time based tracking is not supported during DBH in modem,
+-#   AP side has to use ZPP to get bese available position during DBH for CPI injection.
+-USE_ZPP_IN_DBH = 0
+-
+ #####################################
+ # Location process launcher settings
+ #####################################
+diff --git a/configs/hidl/device_framework_compatibility_matrix.xml b/configs/hidl/device_framework_compatibility_matrix.xml
+index 1c985ac..fabb20e 100644
+--- a/configs/hidl/device_framework_compatibility_matrix.xml
++++ b/configs/hidl/device_framework_compatibility_matrix.xml
+@@ -1209,4 +1209,11 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+         <instance>wifidisplaysessionvideotrack</instance>
+     </interface>
+ </hal>
++   <hal format="aidl" optional="true">
++        <name>vendor.lineage.health</name>
++        <interface>
++            <name>IChargingControl</name>
++            <instance>default</instance>
++        </interface>
++    </hal>
+ </compatibility-matrix>
+diff --git a/configs/permissions/system_ext-privapp-permissions-qti.xml b/configs/permissions/system_ext-privapp-permissions-qti.xml
+index 2ea0e4d..0247b59 100644
+--- a/configs/permissions/system_ext-privapp-permissions-qti.xml
++++ b/configs/permissions/system_ext-privapp-permissions-qti.xml
+@@ -39,4 +39,7 @@ It allows additional grants on top of privapp-permissions-platform.xml
+         <permission name="android.permission.SUBSTITUTE_NOTIFICATION_APP_NAME"/>
+         <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
+     </privapp-permissions>
++    <privapp-permissions package="com.google.android.GoogleCameraEng">
++        <permission name="android.permission.INSTALL_PACKAGE_UPDATES"/>
++    </privapp-permissions>
+ </permissions>
+diff --git a/configs/permissions/system_ext-privapp-permissions.xml b/configs/permissions/system_ext-privapp-permissions.xml
+deleted file mode 100644
+index 57ddc51..0000000
+--- a/configs/permissions/system_ext-privapp-permissions.xml
++++ /dev/null
+@@ -1,33 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<!--
+- ~ Copyright (c) 2017, The Linux Foundation. All rights reserved.
+- ~ Not a Contribution.
+--->
+-
+-<!--
+- ~ Copyright (C) 2016 The Android Open Source Project
+- ~
+- ~ Licensed under the Apache License, Version 2.0 (the "License");
+- ~ you may not use this file except in compliance with the License.
+- ~ You may obtain a copy of the License at
+- ~
+- ~ http://www.apache.org/licenses/LICENSE-2.0
+- ~
+- ~ Unless required by applicable law or agreed to in writing, software
+- ~ distributed under the License is distributed on an "AS IS" BASIS,
+- ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- ~ See the License for the specific language governing permissions and
+- ~ limitations under the License
+- -->
+-
+-<!--
+-This XML file declares which signature|privileged permissions should be
+-granted to privileged applications on QTI devices.
+-It allows additional grants on top of privapp-permissions-platform.xml
+--->
+-
+-<permissions>
+-    <privapp-permissions package="com.qti.ltebc">
+-        <permission name="android.permission.SCHEDULE_EXACT_ALARM"/>
+-    </privapp-permissions>
+-</permissions>
+diff --git a/configs/public.libraries.txt b/configs/public.libraries.txt
+index 321a041..c9d7058 100644
+--- a/configs/public.libraries.txt
++++ b/configs/public.libraries.txt
+@@ -1,16 +1,38 @@
+ libadsprpc.so
+-libalAILDC.so
+-libalCFR.so
+-libalhLDC.so
+ libcdsprpc.so
+-libHalSuperSensorServer.so
+-libOpenCL.so
+ libsdsprpc.so
+-libSuperSensorCPU.so
+-libSuperSensor.so
+-libVDClearShot.so
+-libVDSuperPhotoAPI.so
+-libprotobuf-cpp-full-3.9.1.so
+-libprotobuf-cpp-lite-3.9.1.so
+-libprotobuf-cpp-full.so
+-libprotobuf-cpp-lite.so
++libfastcvopt.so
++liblistensoundmodel2.so
++libOpenCL.so
++libhta_hexagon_runtime.so
++unnhal-acc-hta.so
++libmpbase.so 64
++libmialgoengine.so 64
++libarcsoft_beautyshot.so 64
++libarcsoft_dualcam_refocus.so 64
++libarcsoft_dualcam_refocus_rear_t.so 64
++libarcsoft_dualcam_refocus_rear_w.so 64
++libarcsoft_dualcam_refocus_front.so 64
++libarcsoft_portrait_lighting.so 64
++libarcsoft_portrait_lighting_c.so 64
++librelight_only.so 64
++libmibokeh_712.so 64
++libarcsoft_distortion_correction.so 64
++libalCFR.so
++libcvp.so
++libcvp_stub.so
++libcvp_common.so
++libsdk_sr.so 64
++lib_sr_models.so 64
++libhvx_interface.so 64
++libxml2_vendor.so 64
++libmialgo_ie_capture.so 64
++libmialgo_utils.so
++libxmi_high_dynamic_range.so 64
++libxmi_hdr_checker.so 64
++libbeauty_face_interface.so 64
++libmiai_portraitsupernight.so 64
++libSNPE.so 64
++libsymphony-cpu.so 64
++libsnpe_dsp_domains_v2.so 64
++
+diff --git a/device.mk b/device.mk
+index 199f087..2699693 100644
+--- a/device.mk
++++ b/device.mk
+@@ -51,27 +51,26 @@ PRODUCT_PACKAGES += \
+ 
+ # Audio
+ PRODUCT_PACKAGES += \
+-    audio.bluetooth.default \
++    android.hardware.audio@6.0-impl \
+     android.hardware.audio.effect@6.0-impl \
+     android.hardware.audio.service \
+-    android.hardware.audio@6.0-impl \
+-    android.hardware.soundtrigger@2.2-impl \
+-    audio.primary.sm6150 \
+-    audio.r_submix.default \
++    android.hardware.bluetooth.audio@2.1-impl \
++    android.hardware.soundtrigger@2.2-impl
++
++PRODUCT_PACKAGES += \
++    audio.bluetooth.default \
+     audio.usb.default \
+-    liba2dpoffload \
+-    libaudio-resampler \
+-    libhdmiedid \
+-    libhfp \
++    audio.r_submix.default 
++
++PRODUCT_PACKAGES += \
+     libqcompostprocbundle \
+     libqcomvisualizer \
+     libqcomvoiceprocessing \
+-    libsndmonitor \
+-    libspkrprot \
+     libtinycompress \
+     libvolumelistener
+ 
+-
++PRODUCT_PACKAGES += \
++    libaudio-resampler
+ 
+ PRODUCT_COPY_FILES += \
+     $(LOCAL_PATH)/configs/audio/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml \
+@@ -85,6 +84,8 @@ PRODUCT_COPY_FILES += \
+     $(LOCAL_PATH)/configs/audio/mixer_paths_overlay_static.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_paths_overlay_static.xml \
+     $(LOCAL_PATH)/configs/audio/sound_trigger_mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/sound_trigger_mixer_paths.xml
+ 
++PRODUCT_COPY_FILES += \
++    $(LOCAL_PATH)/configs/audio/sound_trigger_platform_info.xml:$(TARGET_COPY_OUT_VENDOR)/etc/sound_trigger_platform_info.xml
+ 
+ PRODUCT_COPY_FILES += \
+     frameworks/av/services/audiopolicy/config/bluetooth_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/bluetooth_audio_policy_configuration_7_0.xml \
+@@ -100,15 +101,7 @@ PRODUCT_COPY_FILES += \
+ 
+ # Bluetooth
+ PRODUCT_PACKAGES += \
+-    android.hardware.bluetooth.a2dp@1.0 \
+-    android.hardware.bluetooth.audio-impl \
+-    android.hardware.bluetooth.a2dp@1.0-impl \
+-    android.hardware.bluetooth.audio@2.1-impl \
+-    android.hardware.bluetooth@1.1.vendor \
+-    audio.bluetooth.default \
+-    libbthost_if \
+-    libbthost_if_sink \
+-    libldacBT_bco.vendor \
++    android.hardware.bluetooth@1.0.vendor \
+     vendor.qti.hardware.bluetooth_audio@2.1.vendor \
+     vendor.qti.hardware.btconfigstore@1.0.vendor \
+     vendor.qti.hardware.btconfigstore@2.0.vendor
+@@ -125,6 +118,10 @@ PRODUCT_PACKAGES += \
+     android.hardware.camera.provider@2.4-service_64 \
+     libdng_sdk.vendor
+ 
++PRODUCT_PACKAGES += \
++    libMegviiFacepp-0.5.2 \
++    libmegface
++
+ PRODUCT_COPY_FILES += \
+     frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.flash-autofocus.xml \
+     frameworks/native/data/etc/android.hardware.camera.front.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.front.xml \
+@@ -135,6 +132,10 @@ PRODUCT_COPY_FILES += \
+ PRODUCT_PACKAGES += \
+     XiaomiParts
+ 
++# Dexpreopt
++PRODUCT_DEXPREOPT_SPEED_APPS += \
++    SystemUI
++
+ # Display
+ PRODUCT_PACKAGES += \
+     android.hardware.graphics.composer@2.4-service \
+@@ -169,6 +170,10 @@ PRODUCT_PACKAGES += \
+     android.hardware.drm-service.clearkey \
+     android.hardware.drm@1.4.vendor
+ 
++# Fastbootd
++PRODUCT_PACKAGES += \
++    fastbootd
++
+ # Fingerprint
+ PRODUCT_PACKAGES += \
+     android.hardware.biometrics.fingerprint@2.3-service.xiaomi
+@@ -226,8 +231,13 @@ PRODUCT_COPY_FILES += \
+ 
+ # Health
+ PRODUCT_PACKAGES += \
+-    android.hardware.health@2.1-impl \
+-    android.hardware.health@2.1-service
++    android.hardware.health@2.1.vendor \
++    android.hardware.health-service.qti \
++    android.hardware.health-service.qti_recovery
++
++# Lineage Health
++PRODUCT_PACKAGES += \
++    vendor.lineage.health-service.default
+ 
+ # HIDL
+ PRODUCT_PACKAGES += \
+@@ -271,6 +281,10 @@ PRODUCT_COPY_FILES += \
+ PRODUCT_PACKAGES += \
+     android.hardware.keymaster@4.1.vendor
+ 
++# Lineage Health
++PRODUCT_PACKAGES += \
++    vendor.lineage.health-service.default
++
+ # LiveDisplay
+ PRODUCT_PACKAGES += \
+     vendor.lineage.livedisplay@2.1-service.xiaomi_sm6150
+@@ -346,6 +360,9 @@ DEVICE_PACKAGE_OVERLAYS += \
+ 
+ PRODUCT_ENFORCE_RRO_TARGETS += *
+ 
++# Partitions
++PRODUCT_USE_DYNAMIC_PARTITIONS := true
++
+ # Perf
+ PRODUCT_PACKAGES += \
+     libqti-perfd-client
+@@ -384,7 +401,6 @@ PRODUCT_PACKAGES += \
+ 
+ # Recovery
+ PRODUCT_PACKAGES += \
+-    fastbootd \
+     librecovery_updater_xiaomi
+ 
+ PRODUCT_PACKAGES += \
+@@ -428,9 +444,13 @@ PRODUCT_PACKAGES += \
+     ims-ext-common \
+     ims_ext_common.xml \
+     qti-telephony-hidl-wrapper \
++    qti-telephony-hidl-wrapper-prd \
+     qti_telephony_hidl_wrapper.xml \
++    qti_telephony_hidl_wrapper_prd.xml \
+     qti-telephony-utils \
++    qti-telephony-utils-prd \
+     qti_telephony_utils.xml \
++    qti_telephony_utils_prd.xml \
+     telephony-ext
+ 
+ PRODUCT_BOOT_JARS += \
+@@ -485,7 +505,7 @@ PRODUCT_COPY_FILES += \
+ 
+ # WiFi
+ PRODUCT_PACKAGES += \
+-    android.hardware.wifi-service@1.0 \
++    android.hardware.wifi-service \
+     hostapd \
+     ipacm \
+     IPACM_cfg.xml \
+@@ -514,8 +534,6 @@ PRODUCT_PACKAGES += \
+     libavservices_minijail \
+     libavservices_minijail.vendor \
+     libdisplayconfig.qti \
+-    libdisplayconfig.qti.vendor \
+-    libdisplayconfig.system \
+     libdisplayconfig.system.qti \
+     libnl \
+     libqdMetaData \
+diff --git a/evolution_courbet.mk b/evolution_courbet.mk
+deleted file mode 100644
+index 4e04572..0000000
+--- a/evolution_courbet.mk
++++ /dev/null
+@@ -1,36 +0,0 @@
+-#
+-# Copyright (C) 2021 The blazeOS Project
+-#
+-# SPDX-License-Identifier: Apache-2.0
+-#
+-
+-# Inherit from those products. Most specific first.
+-$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
+-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
+-
+-# Inherit from courbet device
+-$(call inherit-product, device/xiaomi/courbet/device.mk)
+-
+-# Inherit some common Ancient OS stuff.
+-$(call inherit-product, vendor/evolution/config/common_full_phone.mk)
+-
+-# Inherit gms if exist
+-$(call inherit-product, vendor/gms/gms_full.mk)
+-
+-# Boot animation
+-TARGET_BOOT_ANIMATION_RES := 1080
+-TARGET_SUPPORTS_QUICK_TAP := true
+-
+-
+-PRODUCT_NAME := evolution_courbet
+-PRODUCT_DEVICE := courbet
+-PRODUCT_BRAND := Xiaomi
+-PRODUCT_MODEL := M2101K9AG
+-PRODUCT_MANUFACTURER := Xiaomi
+-
+-PRODUCT_GMS_CLIENTID_BASE := android-xiaomi
+-
+-PRODUCT_BUILD_PROP_OVERRIDES += \
+-    PRIVATE_BUILD_DESC="courbet_global-user 13 TKQ1.221013.002 V14.0.3.0.TKQMIXM release-keys"
+-
+-BUILD_FINGERPRINT := Xiaomi/courbet_global/courbet:13/TKQ1.221013.002/V14.0.3.0.TKQMIXM:user/release-keys
+diff --git a/power/power-mode.cpp b/power/power-mode.cpp
+index 18ab033..a52bfc3 100644
+--- a/power/power-mode.cpp
++++ b/power/power-mode.cpp
+@@ -34,7 +34,6 @@ namespace hardware {
+ namespace power {
+ namespace impl {
+ 
+-
+ using ::aidl::android::hardware::power::Mode;
+ 
+ bool isDeviceSpecificModeSupported(Mode type, bool* _aidl_return) {
+diff --git a/proprietary-files.txt b/proprietary-files.txt
+index 9c82eda..8fb7482 100644
+--- a/proprietary-files.txt
++++ b/proprietary-files.txt
+@@ -993,6 +993,7 @@ vendor/etc/init/netmgrd.rc
+ vendor/etc/init/qcrild.rc
+ vendor/etc/init/vendor.qti.rmt_storage.rc
+ vendor/etc/init/vendor.qti.tftp.rc
++vendor/lib64/deviceInfoServiceModule.so
+ vendor/lib64/libconfigdb.so
+ vendor/lib64/libdsi_netctrl.so
+ vendor/lib64/liblqe.so
+diff --git a/rootdir/etc/ueventd.rc b/rootdir/etc/ueventd.rc
+index 7371dd2..0123f47 100644
+--- a/rootdir/etc/ueventd.rc
++++ b/rootdir/etc/ueventd.rc
+@@ -177,8 +177,13 @@ firmware_directories /vendor/firmware_mnt/image/
+ /dev/spidev0.0            0660   system     audio
+ /dev/spidev0.1            0660   system     system
+ 
++# Fingerprint
++/dev/goodix_fp            0660   system     system
++
+ # socinfo
+ /sys/devices/soc0        serial_number   0000    root      root
+ 
+-# Fingerprint
+-/dev/goodix_fp            0660   system     system
++# Charger
++/sys/class/power_supply/battery  battery_charging_enabled   0660    system  system
++/sys/class/power_supply/battery  charging_enabled           0660    system  system
++/sys/class/power_supply/battery  input_suspend              0660    system  system
+diff --git a/rro_overlays/WifiOverlay/res/values/config.xml b/rro_overlays/WifiOverlay/res/values/config.xml
+index 05f6dcc..27e9dc0 100644
+--- a/rro_overlays/WifiOverlay/res/values/config.xml
++++ b/rro_overlays/WifiOverlay/res/values/config.xml
+@@ -79,4 +79,10 @@
+          scan and wake the host when a configured SSID is detected by the dongle. This chipset
+          capability can provide power savings when wifi needs to be always kept on. -->
+     <bool name="config_wifi_background_scan_support" translatable="false">true</bool>
++
++    <!-- Indicate the driver support NL80211_REG_CHANGED event. -->
++    <bool name="config_wifiDriverSupportedNl80211RegChangedEvent" translatable="false">true</bool>
++
++    <!-- Indicate the device support request channel on Wi-Fi Aware data-path. -->
++    <bool name="config_wifiSupportChannelOnDataPath" translatable="false">true</bool>
+ </resources>
+diff --git a/sepolicy/vendor/genfs_contexts b/sepolicy/vendor/genfs_contexts
+index 96b0f3d..cbb3c98 100644
+--- a/sepolicy/vendor/genfs_contexts
++++ b/sepolicy/vendor/genfs_contexts
+@@ -1,3 +1,8 @@
++# Battery
++genfscon sysfs /class/power_supply/battery/battery_charging_enabled      u:object_r:sysfs_battery_supply:s0
++genfscon sysfs /class/power_supply/battery/charging_enabled              u:object_r:sysfs_battery_supply:s0
++genfscon sysfs /class/power_supply/battery/input_suspend                 u:object_r:sysfs_battery_supply:s0
++
+ # Display
+ genfscon sysfs /devices/platform/soc/ae00000.qcom,mdss_mdp/idle_encoder_mask         u:object_r:vendor_sysfs_graphics:s0
+ genfscon sysfs /devices/platform/soc/ae00000.qcom,mdss_mdp/idle_state                u:object_r:vendor_sysfs_graphics:s0
+diff --git a/vendor.prop b/vendor.prop
+index a5ecf40..99f67c3 100644
+--- a/vendor.prop
++++ b/vendor.prop
+@@ -63,7 +63,7 @@ vendor.audio_hal.in_period_size=144
+ vendor.audio_hal.period_multiplier=3
+ vendor.audio_hal.period_size=192
+ vendor.audio.hw.aac.encoder=false
+-vendor.audio.offload.buffer.size.kb=256
++vendor.audio.offload.buffer.size.kb=32
+ vendor.audio.offload.gapless.enabled=true
+ vendor.audio.offload.multiaac.enable=true
+ vendor.audio.offload.multiple.enabled=false
+@@ -107,6 +107,7 @@ bluetooth.profile.sap.server.enabled?=true
+ persist.bluetooth.a2dp_offload.disabled=false
+ persist.vendor.bt.aac_frm_ctl.enabled=true
+ persist.vendor.qcom.bluetooth.a2dp_offload_cap=sbc-aac-aptx-aptxhd-ldac
++persist.vendor.qcom.bluetooth.aac_frm_ctl.enabled=true
+ persist.vendor.qcom.bluetooth.enable.splita2dp=true
+ persist.vendor.qcom.bluetooth.scram.enabled=true
+ persist.vendor.qcom.bluetooth.soc=cherokee
+@@ -128,6 +129,7 @@ ro.crypto.volume.metadata.method=dm-default-key
+ ro.crypto.volume.options=::v2
+ 
+ # Dalvik
++dalvik.vm.dex2oat64.enabled=true
+ dalvik.vm.systemuicompilerfilter=speed
+ 
+ # Data modules
+@@ -155,6 +157,7 @@ debug.sf.earlyGl.app.duration=21000000
+ debug.sf.enable_hwc_vds=1
+ debug.sf.hw=0
+ debug.sf.predict_hwc_composition_strategy=0
++debug.sf.treat_170m_as_sRGB=1
+ ro.hardware.egl=adreno
+ ro.hardware.vulkan=adreno
+ ro.opengles.version=196610
