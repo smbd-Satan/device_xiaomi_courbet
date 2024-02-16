@@ -184,7 +184,7 @@ BatteryListenerImpl::~BatteryListenerImpl()
 {
     {
         std::lock_guard<std::mutex> _l(mLock);
-        if (mHealth != NULL)
+        if (mHealth != NULL){
             mHealth->unregisterCallback(this);
             auto r = mHealth->unlinkToDeath(this);
             if (!r.isOk() || r == false) {
@@ -192,6 +192,7 @@ BatteryListenerImpl::~BatteryListenerImpl()
                         r.description().c_str());
             }
     }
+}
     mDone = true;
     mThread->join();
 }
