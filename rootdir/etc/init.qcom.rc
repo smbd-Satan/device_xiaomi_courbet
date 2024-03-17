@@ -153,7 +153,7 @@ on post-fs-data
 
     # Create directory for tftp
     mkdir /data/vendor/tombstones 0771 system system
-    mkdir /data/vendor/tombstones/rfs 0771 system system
+    mkdir /data/vendor/tombstones/rfs 0700 system system
 
     # Create directory for bluetooth
     mkdir /data/vendor/bluetooth 0770 bluetooth bluetooth
@@ -280,6 +280,7 @@ service vendor.qcom-post-boot /vendor/bin/init.qcom.post_boot.sh
 
 on property:ro.vendor.ril.mbn_copy_completed=1
     write /data/vendor/radio/copy_complete 1
+
 
 service vendor.msm_irqbalance /vendor/bin/msm_irqbalance -f /vendor/etc/msm_irqbalance.conf
     class core

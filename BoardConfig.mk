@@ -24,9 +24,6 @@ BUILD_BROKEN_DUP_RULES := true
 
 DEVICE_PATH := device/xiaomi/courbet
 
-# Inherit from proprietary files for miuicamera
--include vendor/xiaomi/sweet-miuicamera/products/board.mk
-
 # Inherit from proprietary files
 include vendor/xiaomi/courbet/BoardConfigVendor.mk
 
@@ -47,7 +44,6 @@ BOARD_ANT_WIRELESS_DEVICE := "qualcomm-hidl"
 
 # Audio
 AUDIO_FEATURE_ENABLED_EXTENDED_COMPRESS_FORMAT := true
-AUDIO_FEATURE_ENABLED_DS2_DOLBY_DAP := true
 
 TARGET_PROVIDES_AUDIO_EXTNS := true
 BOARD_SUPPORTS_SOUND_TRIGGER := true
@@ -55,6 +51,10 @@ BOARD_SUPPORTS_SOUND_TRIGGER := true
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := sm6150
 TARGET_NO_BOOTLOADER := true
+
+# Camera
+MALLOC_SVELTE_FOR_LIBC32 := true
+MALLOC_SVELTE := true
 
 # Display
 TARGET_USES_COLOR_METADATA := true
@@ -79,7 +79,6 @@ DEVICE_MATRIX_FILE := hardware/qcom-caf/common/compatibility_matrix.xml
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := $(DEVICE_PATH)/configs/hidl/device_framework_compatibility_matrix.xml \
                                               $(DEVICE_PATH)/configs/hidl/xiaomi_framework_compatibility_matrix.xml \
                                               $(DEVICE_PATH)/configs/hidl/lineage_framework_compatibility_matrix.xml \
-                                              $(DEVICE_PATH)/configs/hidl/audio_dolby.xml
 
 ODM_MANIFEST_SKUS += courbet
 ODM_MANIFEST_COURBET_FILES := \
@@ -93,8 +92,6 @@ BOARD_KERNEL_SEPARATED_DTBO := true
 
 TARGET_KERNEL_SOURCE := kernel/xiaomi/sm6150
 TARGET_KERNEL_CONFIG := courbet_defconfig
-TARGET_KERNEL_CLANG_VERSION := adrian
-TARGET_KERNEL_CLANG_PATH := $(shell pwd)/prebuilts/clang/host/linux-x86/adrian-clang
 
 BOARD_KERNEL_CMDLINE += androidboot.hardware=qcom
 BOARD_KERNEL_CMDLINE += androidboot.usbcontroller=a600000.dwc3
@@ -107,6 +104,9 @@ BOARD_KERNEL_CMDLINE += cgroup_disable=pressure
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
 BOARD_BOOTIMG_HEADER_VERSION := 2
 BOARD_MKBOOTIMG_ARGS := --header_version $(BOARD_BOOTIMG_HEADER_VERSION)
+
+# Lineage Health
+TARGET_HEALTH_CHARGING_CONTROL_SUPPORTS_BYPASS := false
 
 # Media
 TARGET_USES_ION := true
@@ -191,6 +191,11 @@ include device/qcom/sepolicy_vndr/SEPolicy.mk
 BOARD_VENDOR_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/vendor
 SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/private
 SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/public
+
+# Trust
+TARGET_TRUST_USB_CONTROL_PATH := /sys/devices/platform/soc/a600000.ssusb/usb_data_enabled
+TARGET_TRUST_USB_CONTROL_ENABLE := 0
+TARGET_TRUST_USB_CONTROL_DISABLE := 1
 
 # Vendor security patch level
 VENDOR_SECURITY_PATCH := 2023-05-01
