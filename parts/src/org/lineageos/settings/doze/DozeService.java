@@ -30,6 +30,7 @@ public class DozeService extends Service {
     private static final boolean DEBUG = false;
 
     private AodSensor mAodSensor;
+    private ProximitySensor mProximitySensor;
     private PickupSensor mPickupSensor;
 
     @Override
@@ -37,6 +38,7 @@ public class DozeService extends Service {
         if (DEBUG)
             Log.d(TAG, "Creating service");
         mAodSensor = new AodSensor(this);
+        mProximitySensor = new ProximitySensor(this);
         mPickupSensor = new PickupSensor(this);
 
         IntentFilter screenStateFilter = new IntentFilter();
@@ -58,6 +60,7 @@ public class DozeService extends Service {
             Log.d(TAG, "Destroying service");
         super.onDestroy();
         this.unregisterReceiver(mScreenStateReceiver);
+        mProximitySensor.disable();
         mPickupSensor.disable();
     }
 
@@ -69,11 +72,11 @@ public class DozeService extends Service {
     private void onDisplayOn() {
         if (DEBUG)
             Log.d(TAG, "Display on");
-        if (DozeUtils.isAlwaysOnEnabled(this)) {
-            DozeUtils.setDozeStatus(DozeUtils.DOZE_STATUS_DISABLED);
-        }
         if (DozeUtils.isPickUpEnabled(this)) {
             mPickupSensor.disable();
+        }
+        if (DozeUtils.isHandwaveGestureEnabled(this) || DozeUtils.isPocketGestureEnabled(this)) {
+            mProximitySensor.disable();
         }
         if (DozeUtils.isDozeAutoBrightnessEnabled(this)) {
             mAodSensor.disable();
@@ -83,11 +86,11 @@ public class DozeService extends Service {
     private void onDisplayOff() {
         if (DEBUG)
             Log.d(TAG, "Display off");
-        if (DozeUtils.isAlwaysOnEnabled(this)) {
-            DozeUtils.setDozeStatus(DozeUtils.DOZE_STATUS_ENABLED);
-        }
         if (DozeUtils.isPickUpEnabled(this)) {
             mPickupSensor.enable();
+        }
+        if (DozeUtils.isHandwaveGestureEnabled(this) || DozeUtils.isPocketGestureEnabled(this)) {
+            mProximitySensor.enable();
         }
         if (DozeUtils.isDozeAutoBrightnessEnabled(this)) {
             mAodSensor.enable();
