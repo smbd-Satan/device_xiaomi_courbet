@@ -21,8 +21,12 @@ BUILD_BROKEN_MISSING_REQUIRED_MODULES := true
 BUILD_BROKEN_VENDOR_PROPERTY_NAMESPACE := true
 BUILD_BROKEN_PREBUILT_ELF_FILES := true
 BUILD_BROKEN_DUP_RULES := true
+BUILD_BROKEN_INCORRECT_PARTITION_IMAGES := true
 
 DEVICE_PATH := device/xiaomi/courbet
+
+# Assert
+TARGET_OTA_ASSERT_DEVICE := courbet,courbetin
 
 # Inherit from proprietary files
 include vendor/xiaomi/courbet/BoardConfigVendor.mk
@@ -31,6 +35,7 @@ include vendor/xiaomi/courbet/BoardConfigVendor.mk
 TARGET_ARCH := arm64
 TARGET_ARCH_VARIANT := armv8-2a-dotprod
 TARGET_CPU_ABI := arm64-v8a
+TARGET_CPU_ABI2 :=
 TARGET_CPU_VARIANT := cortex-a76
 
 TARGET_2ND_ARCH := arm
@@ -45,7 +50,7 @@ BOARD_ANT_WIRELESS_DEVICE := "qualcomm-hidl"
 # Audio
 AUDIO_FEATURE_ENABLED_EXTENDED_COMPRESS_FORMAT := true
 
-TARGET_PROVIDES_AUDIO_EXTNS := true
+BOARD_SUPPORTS_OPENSOURCE_STHAL := true
 BOARD_SUPPORTS_SOUND_TRIGGER := true
 
 # Bootloader
@@ -53,8 +58,9 @@ TARGET_BOOTLOADER_BOARD_NAME := sm6150
 TARGET_NO_BOOTLOADER := true
 
 # Camera
-MALLOC_SVELTE_FOR_LIBC32 := true
 MALLOC_SVELTE := true
+MALLOC_SVELTE_FOR_LIBC32 := true
+MALLOC_SVELTE_FOR_LIBC64 := true
 
 # Display
 TARGET_USES_COLOR_METADATA := true
@@ -78,7 +84,7 @@ DEVICE_MANIFEST_FILE := $(DEVICE_PATH)/configs/hidl/manifest.xml
 DEVICE_MATRIX_FILE := $(DEVICE_PATH)/configs/hidl/compatibility_matrix.xml
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := $(DEVICE_PATH)/configs/hidl/device_framework_compatibility_matrix.xml \
                                               $(DEVICE_PATH)/configs/hidl/xiaomi_framework_compatibility_matrix.xml \
-                                              $(DEVICE_PATH)/configs/hidl/lineage_framework_compatibility_matrix.xml \
+                                              $(DEVICE_PATH)/configs/hidl/lineage_framework_compatibility_matrix.xml 
 
 ODM_MANIFEST_SKUS += courbet
 ODM_MANIFEST_COURBET_FILES := \
@@ -93,12 +99,16 @@ BOARD_KERNEL_SEPARATED_DTBO := true
 TARGET_KERNEL_SOURCE := kernel/xiaomi/sm6150
 TARGET_KERNEL_CONFIG := courbet_defconfig
 
+
 BOARD_KERNEL_CMDLINE += androidboot.hardware=qcom
 BOARD_KERNEL_CMDLINE += androidboot.usbcontroller=a600000.dwc3
 BOARD_KERNEL_CMDLINE += service_locator.enable=1
 BOARD_KERNEL_CMDLINE += lpm_levels.sleep_disabled=1
 BOARD_KERNEL_CMDLINE += loop.max_part=7
 BOARD_KERNEL_CMDLINE += cgroup_disable=pressure
+
+TARGET_KERNEL_CLANG_COMPILE := true
+TARGET_KERNEL_CLANG_PATH := $(shell pwd)/prebuilts/clang/host/linux-x86/clang-r498229b
 
 # Enable DTB in bootimage and set header version
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
@@ -191,11 +201,6 @@ include device/qcom/sepolicy_vndr/SEPolicy.mk
 BOARD_VENDOR_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/vendor
 SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/private
 SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/public
-
-# Trust
-TARGET_TRUST_USB_CONTROL_PATH := /sys/devices/platform/soc/a600000.ssusb/usb_data_enabled
-TARGET_TRUST_USB_CONTROL_ENABLE := 0
-TARGET_TRUST_USB_CONTROL_DISABLE := 1
 
 # Vendor security patch level
 VENDOR_SECURITY_PATCH := 2023-05-01

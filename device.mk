@@ -20,17 +20,11 @@ $(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
 # Call the proprietary setup
 $(call inherit-product, vendor/xiaomi/courbet/courbet-vendor.mk)
 
-# Installs gsi keys into ramdisk, to boot a GSI with verified boot.
-$(call inherit-product, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
-
 # Call the MiuiCamera setup
 $(call inherit-product-if-exists, vendor/xiaomi/sweet-miuicamera/products/miuicamera.mk)
 
 # API level, the device has been commercially launched on
 PRODUCT_SHIPPING_API_LEVEL := 30
-
-# Enable updating of APEXes
-$(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
 
 # AAPT
 PRODUCT_AAPT_CONFIG := normal
@@ -55,7 +49,8 @@ PRODUCT_PACKAGES += \
     android.hardware.audio.effect@6.0-impl \
     android.hardware.audio.service \
     android.hardware.bluetooth.audio-impl \
-    android.hardware.soundtrigger@2.2-impl
+    android.hardware.soundtrigger@2.2-impl \
+    android.hardware.audio.sounddose-vendor-impl 
 
 PRODUCT_PACKAGES += \
     audio.bluetooth.default \
@@ -102,14 +97,25 @@ PRODUCT_COPY_FILES += \
 
 # Bluetooth
 PRODUCT_PACKAGES += \
+    audio.bluetooth.default \
+    libldacBT_abr \
+    libldacBT_bco \
+    libldacBT_enc
+    
+PRODUCT_PACKAGES += \
     android.hardware.bluetooth@1.0.vendor \
     vendor.qti.hardware.bluetooth_audio@2.1.vendor \
     vendor.qti.hardware.btconfigstore@1.0.vendor \
-    vendor.qti.hardware.btconfigstore@2.0.vendor
+    vendor.qti.hardware.btconfigstore@2.0.vendor \
+    libldacBT_bco
 
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.bluetooth_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth_le.xml \
     frameworks/native/data/etc/android.hardware.bluetooth.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth.xml
+    
+    # BtHelper
+PRODUCT_PACKAGES += \
+    BtHelper
 
 # Camera
 PRODUCT_PACKAGES += \
@@ -135,7 +141,8 @@ PRODUCT_PACKAGES += \
 
 # Dexpreopt
 PRODUCT_DEXPREOPT_SPEED_APPS += \
-    SystemUI
+    SystemUI \
+    SystemUIGoogle 
 
 # Display
 PRODUCT_PACKAGES += \
@@ -170,6 +177,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     android.hardware.drm-service.clearkey \
     android.hardware.drm@1.4.vendor
+
+# Fastbootd
+PRODUCT_PACKAGES += \
+    fastbootd
 
 # Fingerprint
 PRODUCT_PACKAGES += \
@@ -273,6 +284,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     android.hardware.keymaster@4.1.vendor
 
+# Lineage Health
+PRODUCT_PACKAGES += \
+    vendor.lineage.health-service.default
+
 # LiveDisplay
 PRODUCT_PACKAGES += \
     vendor.lineage.livedisplay@2.1-service.xiaomi_sm6150
@@ -351,10 +366,6 @@ PRODUCT_ENFORCE_RRO_TARGETS += *
 # Partitions
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
 
-# Perf
-PRODUCT_PACKAGES += \
-    libqti-perfd-client
-
 # Power
 PRODUCT_PACKAGES += \
 android.hardware.power-service-qti
@@ -363,7 +374,10 @@ $(call inherit-product-if-exists, vendor/qcom/opensource/power/power-vendor-prod
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/power/powerhint.json:$(TARGET_COPY_OUT_VENDOR)/etc/powerhint.json
-
+    
+#Perf
+PRODUCT_PACKAGES += \
+	 libqti-perfd-client
 # QTI
 PRODUCT_PACKAGES += \
     libqti_vndfwk_detect.vendor
@@ -389,7 +403,6 @@ PRODUCT_PACKAGES += \
 
 # Recovery
 PRODUCT_PACKAGES += \
-    fastbootd \
     librecovery_updater_xiaomi
 
 PRODUCT_PACKAGES += \
@@ -422,6 +435,7 @@ PRODUCT_SOONG_NAMESPACES += \
     $(LOCAL_PATH) \
     hardware/google/interfaces \
     hardware/google/pixel \
+    hardware/qcom-caf/common/libqti-perfd-client \
     hardware/xiaomi
 
 # Telephony
@@ -451,13 +465,13 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.telephony.cdma.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.cdma.xml \
     frameworks/native/data/etc/android.software.sip.voip.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.sip.voip.xml
 
+#Thermal
+PRODUCT_PACKAGES += \
+	android.hardware.thermal@2.0-service.qti
+
 # Touchscreen
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml
-
-# Trust HAL
-PRODUCT_PACKAGES += \
-    vendor.lineage.trust@1.0-service
 
 # Uevent
 PRODUCT_COPY_FILES += \
@@ -465,7 +479,7 @@ PRODUCT_COPY_FILES += \
 
 # USB
 PRODUCT_PACKAGES += \
-    android.hardware.usb@1.0-service
+    android.hardware.usb@1.3-service.dual_role_usb
 
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.usb.accessory.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.accessory.xml \

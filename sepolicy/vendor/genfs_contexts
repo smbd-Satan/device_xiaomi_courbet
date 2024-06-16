@@ -74,7 +74,7 @@ genfscon sysfs /devices/platform/soc/soc:qcom,smp2p-cdsp/wakeup                 
 genfscon sysfs /devices/platform/soc/a8c000.i2c/i2c-2/2-005a/ulevel                u:object_r:sysfs_vibrator:s0
 
 # Power
-genfscon proc /sys/kernel/sched_energy_aware u:object_r:proc_sched_energy_aware:s0
+#genfscon proc /sys/kernel/sched_energy_aware u:object_r:proc_sched_energy_aware:s0
 
 # ds28e16 battery verify
-genfscon sysfs /devices/platform/soc/soc:maxim_ds28e16/power_supply/batt_verify/type u:object_r:vendor_sysfs_battery_supply:s0
+#genfscon sysfs /devices/platform/soc/soc:maxim_ds28e16/power_supply/batt_verify/type #u:object_r:vendor_sysfs_battery_supply:s0

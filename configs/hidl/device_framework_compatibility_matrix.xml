@@ -60,6 +60,14 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
            <instance>default</instance>
        </interface>
    </hal>
+    <hal format="hidl" optional="true">
+       <name>android.hardware.health</name>
+       <version>1.0</version>
+       <interface>
+           <name>IHealth</name>
+           <instance>default</instance>
+       </interface>
+   </hal>
   	 <hal format="hidl" optional="true">
        <name>android.hardware.audio.effect</name>
        <version>6.0</version>
@@ -308,6 +316,14 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         <interface>
             <name>IApiService</name>
             <instance>cnd</instance>
+        </interface>
+    </hal>
+    <hal format="hidl" optional="true">
+        <name>android.hardware.usb</name>
+        <version>1.3</version>
+        <interface>
+            <name>IUsb</name>
+            <instance>default</instance>
         </interface>
     </hal>
     <hal format="hidl" optional="true">
@@ -1207,6 +1223,14 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <interface>
         <name>IWifiDisplaySessionVideoTrack</name>
         <instance>wifidisplaysessionvideotrack</instance>
+    </interface>
+</hal>
+<hal format="aidl" optional="true">
+    <name>vendor.lineage.health</name>
+    <version>1</version>
+    <interface>
+          <name>IChargingControl</name>
+          <instance>default</instance>
     </interface>
 </hal>
 </compatibility-matrix>
