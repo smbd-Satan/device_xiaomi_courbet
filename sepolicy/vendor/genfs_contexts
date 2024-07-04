@@ -78,6 +78,3 @@ genfscon sysfs /devices/platform/soc/a8c000.i2c/i2c-2/2-005a/ulevel             
 
 # ds28e16 battery verify
 #genfscon sysfs /devices/platform/soc/soc:maxim_ds28e16/power_supply/batt_verify/type #u:object_r:vendor_sysfs_battery_supply:s0
-
-# Touchpanel
-genfscon sysfs /devices/virtual/touch/touch_dev/        u:object_r:sysfs_touchpanel:s0
