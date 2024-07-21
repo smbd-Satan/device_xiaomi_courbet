@@ -41,41 +41,5 @@ $(DSP_MOUNT_POINT): $(LOCAL_INSTALLED_MODULE)
 
 ALL_DEFAULT_INSTALLED_MODULES += $(FIRMWARE_MOUNT_POINT) $(BT_FIRMWARE_MOUNT_POINT) $(DSP_MOUNT_POINT)
 
-EGL_SYMLINKS := $(TARGET_OUT_VENDOR)/lib/
-$(EGL_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
-	mkdir -p $@
-	$(hide) ln -sf egl/libEGL_adreno.so $@/libEGL_adreno.so
-	$(hide) ln -sf egl/libGLESv2_adreno.so $@/libGLESv2_adreno.so
-
-ALL_DEFAULT_INSTALLED_MODULES += $(EGL_SYMLINKS)
-
-EGL64_SYMLINKS := $(TARGET_OUT_VENDOR)/lib64/
-$(EGL64_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
-	mkdir -p $@
-	$(hide) ln -sf egl/libEGL_adreno.so $@/libEGL_adreno.so
-	$(hide) ln -sf egl/libGLESv2_adreno.so $@/libGLESv2_adreno.so
-
-ALL_DEFAULT_INSTALLED_MODULES += $(EGL64_SYMLINKS)
-
-IMS_LIBS := libimscamera_jni.so libimsmedia_jni.so
-IMS_SYMLINKS := $(addprefix $(TARGET_OUT_SYSTEM_EXT_APPS_PRIVILEGED)/ims/lib/arm64/,$(notdir $(IMS_LIBS)))
-$(IMS_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
-	@echo "IMS lib link: $@"
-	@mkdir -p $(dir $@)
-	@rm -rf $@
-	$(hide) ln -sf /system_ext/lib64/$(notdir $@) $@
-
-ALL_DEFAULT_INSTALLED_MODULES += $(IMS_SYMLINKS)
-
-WIFI_FIRMWARE_SYMLINKS := $(TARGET_OUT_VENDOR)/firmware/wlan/qca_cld/
-$(WIFI_FIRMWARE_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
-	@echo "Creating wifi firmware symlinks: $@"
-	mkdir -p $@
-	$(hide) ln -sf /vendor/etc/wifi/WCNSS_qcom_cfg.ini $@/WCNSS_qcom_cfg.ini
-	$(hide) ln -sf /mnt/vendor/persist/wlan_mac.bin $@/wlan_mac.bin
-
-ALL_DEFAULT_INSTALLED_MODULES += $(WIFI_FIRMWARE_SYMLINKS)
-
 endif
-LOCAL_SHARED_LIBRARIES += android.hardware.audio.sounddose-vendor-impl  
 LOCAL_SHARED_LIBRARIES += sound_trigger.primary.sm6150
