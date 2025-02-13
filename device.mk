@@ -486,6 +486,9 @@ PRODUCT_COPY_FILES += \
 # Updater
 AB_OTA_UPDATER := false
 
+# UFFD GC
+OVERRIDE_ENABLE_UFFD_GC := false
+
 # Uevent
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/etc/ueventd.rc:$(TARGET_COPY_OUT_VENDOR)/etc/ueventd.rc
