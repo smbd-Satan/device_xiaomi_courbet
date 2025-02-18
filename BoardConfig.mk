@@ -83,9 +83,9 @@ TARGET_RECOVERY_DEVICE_MODULES := libinit_courbet
 # HIDL
 DEVICE_MANIFEST_FILE := $(DEVICE_PATH)/configs/hidl/manifest.xml
 DEVICE_MATRIX_FILE := $(DEVICE_PATH)/configs/hidl/compatibility_matrix.xml
-DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := $(DEVICE_PATH)/configs/hidl/device_framework_compatibility_matrix.xml \
-                                              $(DEVICE_PATH)/configs/hidl/xiaomi_framework_compatibility_matrix.xml \
-                                              $(DEVICE_PATH)/configs/hidl/lineage_framework_compatibility_matrix.xml 
+DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := vendor/derp/config/device_framework_matrix.xml \
+                                             hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml \
+                                              hardware/xiaomi/vintf/xiaomi_framework_compatibility_matrix.xml \
 
 ODM_MANIFEST_SKUS += courbet
 ODM_MANIFEST_COURBET_FILES := \
@@ -186,7 +186,7 @@ BOARD_USES_QCOM_HARDWARE := true
 # Recovery
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/etc/fstab.qcom
 BOARD_INCLUDE_RECOVERY_DTBO := true
-TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
+TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
 
 # RIL
 ENABLE_VENDOR_RIL_SERVICE := true
