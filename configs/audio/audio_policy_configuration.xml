@@ -79,7 +79,7 @@
                 </mixPort>
                 <mixPort name="hifi_playback" role="source" />
                 <mixPort name="compress_passthrough" role="source"
-                        flags="AUDIO_OUTPUT_FLAG_DIRECT|AUDIO_OUTPUT_FLAG_COMPRESS_OFFLOAD AUDIO_OUTPUT_FLAG_NON_BLOCKING">
+                        flags="AUDIO_OUTPUT_FLAG_DIRECT AUDIO_OUTPUT_FLAG_COMPRESS_OFFLOAD AUDIO_OUTPUT_FLAG_NON_BLOCKING">
                 </mixPort>
                 <mixPort name="direct_pcm" role="source"
                         flags="AUDIO_OUTPUT_FLAG_DIRECT">
@@ -185,13 +185,13 @@
                 <mixPort name="usb_surround_sound" role="sink">
                     <profile name="" format="AUDIO_FORMAT_PCM_16_BIT"
                              samplingRates="8000 11025 12000 16000 22050 24000 32000 44100 48000 88200 96000 176400 192000"
-                             channelMasks="AUDIO_CHANNEL_IN_MONO AUDIO_CHANNEL_IN_STEREO AUDIO_CHANNEL_IN_FRONT_BACK AUDIO_CHANNEL_INDEX_MASK_3 AUDIO_CHANNEL_INDEX_MASK_4 AUDIO_CHANNEL_IN_5POINT1 AUDIO_CHANNEL_INDEX_MASK_6"/>
+                             channelMasks="AUDIO_CHANNEL_IN_MONO AUDIO_CHANNEL_IN_STEREO AUDIO_CHANNEL_IN_FRONT_BACK AUDIO_CHANNEL_INDEX_MASK_3 AUDIO_CHANNEL_INDEX_MASK_4 AUDIO_CHANNEL_IN_5POINT1 AUDIO_CHANNEL_INDEX_MASK_6 AUDIO_CHANNEL_INDEX_MASK_8"/>
                     <profile name="" format="AUDIO_FORMAT_PCM_32_BIT"
                              samplingRates="8000 11025 12000 16000 22050 24000 32000 44100 48000 88200 96000 176400 192000"
-                             channelMasks="AUDIO_CHANNEL_IN_5POINT1 AUDIO_CHANNEL_INDEX_MASK_6"/>
+                             channelMasks="AUDIO_CHANNEL_IN_5POINT1 AUDIO_CHANNEL_INDEX_MASK_6 AUDIO_CHANNEL_INDEX_MASK_8"/>
                     <profile name="" format="AUDIO_FORMAT_PCM_FLOAT"
                              samplingRates="8000 11025 12000 16000 22050 24000 32000 44100 48000 88200 96000 176400 192000"
-                             channelMasks="AUDIO_CHANNEL_IN_STEREO AUDIO_CHANNEL_INDEX_MASK_2 AUDIO_CHANNEL_IN_5POINT1 AUDIO_CHANNEL_INDEX_MASK_6"/>
+                             channelMasks="AUDIO_CHANNEL_IN_STEREO AUDIO_CHANNEL_INDEX_MASK_2 AUDIO_CHANNEL_IN_5POINT1 AUDIO_CHANNEL_INDEX_MASK_6 AUDIO_CHANNEL_INDEX_MASK_8"/>
                 </mixPort>
                 <mixPort name="record_24" role="sink">
                     <profile name="" format="AUDIO_FORMAT_PCM_24_BIT_PACKED"
@@ -378,21 +378,15 @@
         </module>
 
         <!-- Remote Submix Audio HAL -->
-        <xi:include href="/vendor/etc/r_submix_audio_policy_configuration.xml"/>
-
-        <!-- Bluetooth Audio HAL for Hearing aid -->
-        <xi:include href="/vendor/etc/hearing_aid_audio_policy_configuration_7_0.xml"/>
-
-        <!-- Bluetooth Audio HAL -->
-        <xi:include href="/vendor/etc/bluetooth_audio_policy_configuration_7_0.xml"/>
+        <xi:include href="r_submix_audio_policy_configuration.xml"/>
 
     </modules>
     <!-- End of Modules section -->
 
     <!-- Volume section -->
 
-    <xi:include href="/vendor/etc/audio_policy_volumes.xml"/>
-    <xi:include href="/vendor/etc/default_volume_tables.xml"/>
+    <xi:include href="audio_policy_volumes.xml"/>
+    <xi:include href="default_volume_tables.xml"/>
 
     <!-- End of Volume section -->
 

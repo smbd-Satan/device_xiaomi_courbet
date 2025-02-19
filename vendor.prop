@@ -77,6 +77,7 @@ vendor.audio.usb.disable.sidetone=true
 vendor.audio.use.sw.alac.decoder=true
 vendor.audio.use.sw.ape.decoder=true
 vendor.audio.volume.headset.gain.depcal=true
+vendor.usb.use_gadget_hal=1
 
 persist.vendor.audio.hifi=false
 persist.vendor.audio.ring.filter.mask=0
@@ -200,6 +201,9 @@ persist.sys.sf.color_saturation=1.0
 persist.sys.sf.native_mode=2
 persist.sys.sf.color_mode=9
 
+# Fingerprint
+persist.vendor.fingerprint.sensor_location=1080|950|200|local:4630946545580055169,1080|950|200|local:4630946480857061761
+
 # Fluence
 ro.qc.sdk.audio.fluencetype=none
 persist.audio.fluence.voicecall=true
@@ -234,6 +238,7 @@ ro.config.media_vol_steps=30
 ro.config.vc_call_vol_steps=11
 debug.stagefright.ccodec=1
 debug.stagefright.omx_default_rank=0
+debug.stagefright.c2inputsurface=-1
 
 # Netflix
 vendor.netflix.bsp_rev=Q6150-17263-1
