@@ -23,4 +23,5 @@
         <item>restart_fastboot</item>
         <item>restart_bootloader</item>
     </string-array>
+     <integer name="config_qs_transparency">100</integer>
 </resources>
