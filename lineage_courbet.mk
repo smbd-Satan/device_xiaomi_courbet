@@ -19,8 +19,9 @@ IS_PHONE := true
 PRODUCT_BRAND := Xiaomi
 PRODUCT_DEVICE := courbet
 PRODUCT_MANUFACTURER := Xiaomi
-PRODUCT_NAME := derp_courbet
+PRODUCT_NAME := lineage_courbet
 PRODUCT_MODEL := M2101K9AG
+DERPFEST_BUILD_TYPE := Community
 
 # Gapps Architecture
 WITH_GMS := true

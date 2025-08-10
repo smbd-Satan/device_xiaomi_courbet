@@ -77,7 +77,7 @@ TARGET_RECOVERY_DEVICE_MODULES := libinit_courbet
 # HIDL
 DEVICE_MANIFEST_FILE := $(DEVICE_PATH)/configs/hidl/manifest.xml
 DEVICE_MATRIX_FILE := hardware/qcom-caf/common/compatibility_matrix.xml
-DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := vendor/derp/config/device_framework_matrix.xml \
+DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := vendor/lineage/config/device_framework_matrix.xml \
                                              hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml \
                                               hardware/xiaomi/vintf/xiaomi_framework_compatibility_matrix.xml \
 
@@ -99,7 +99,7 @@ BOARD_KERNEL_CMDLINE += cgroup_disable=pressure
 KERNEL_CC := CC=clang
 
 TARGET_KERNEL_CLANG_COMPILE := true
-TARGET_KERNEL_CLANG_PATH := $(shell pwd)/prebuilts/clang/host/linux-x86/clang-r498229b
+TARGET_KERNEL_CLANG_PATH := $(shell pwd)/prebuilts/clang/host/linux-x86/clang-r522817
 
 # Enable DTB in bootimage and set header version
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
